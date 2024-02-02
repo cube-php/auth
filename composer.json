@@ -1,0 +1,26 @@
+{
+  "name": "cube-php/auth",
+  "description": "PHP Cube Authentication Package",
+  "type": "package",
+  "version": "0.0.1",
+  "autoload": {
+    "psr-4": {
+      "Cube\\Packages\\Auth\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Damilola",
+      "email": "damilolaofficial@gmail.com"
+    }
+  ],
+  "require": {
+    "cube-php/core": "^0.1.11",
+    "firebase/php-jwt": "^6.10"
+  },
+  "extra": {
+    "commands": [
+      "Cube\\Packages\\Auth\\Commands\\AuthSetupCommand"
+    ]
+  }
+}
