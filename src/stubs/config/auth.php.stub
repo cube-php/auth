@@ -1,0 +1,27 @@
+<?php
+
+use Cube\Packages\Auth\AuthConfig;
+use App\Models\UsersModel;
+
+return array(
+    AuthConfig::MODEL => UsersModel::class,
+
+    AuthConfig::HASH_METHOD => 'password_verify',
+
+    AuthConfig::ERROR_MESSAGE => 'Invalid account details',
+
+    AuthConfig::COOKIE_EXPIRY => 30,
+
+    AuthConfig::COMBINATION => array(
+        'secret_key' => 'password',
+        'fields' => array(
+            'first_name' => null,
+            //'email' => 'is_email'
+        )
+    ),
+
+    AuthConfig::JWT => array(
+        'alg' => env('jwt_alg'),
+        'key' => env('jwt_key')
+    )
+);

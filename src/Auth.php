@@ -3,55 +3,17 @@
 namespace Cube\Packages\Auth;
 
 use Cube\App\App;
-use Cube\Exceptions\AuthException;
 use Cube\Http\Cookie;
 use Cube\Http\Session;
 use Cube\Interfaces\ModelInterface;
+use Cube\Misc\EventManager;
+use Cube\Packages\Auth\Exceptions\AuthException;
+use Cube\Packages\Auth\Exceptions\AuthSetupException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 class Auth
 {
-    /**
-     * Error message when authentication fails
-     */
-    public const CONFIG_ERROR_MSG = 'error_msg';
-
-    /**
-     * Password hash method
-     */
-    public const CONFIG_HASH_METHOD = 'hash_method';
-
-    /**
-     * Authenticaton attempt combination
-     */
-    public const CONFIG_COMBINATION = 'combinations';
-
-    /**
-     * Users model class
-     */
-    public const CONFIG_MODEL = 'instance';
-
-    /**
-     * JWT Config
-     */
-    public const CONFIG_JWT = 'jwt';
-
-    /**
-     * No. of days it will take an auth token to expire
-     */
-    public const CONFIG_COOKIE_EXPIRY_DAYS = 'cookie_expiry_days';
-
-    /**
-     * Event dispatched when user is authenticated
-     */
-    public const EVENT_ON_AUTHENTICATED = 'authenticated';
-
-    /**
-     * Event dispatched when user is logged out
-     */
-    public const EVENT_ON_LOGGED_OUT    = 'loggedout';
-
     /**
      * Auth session name
      *
@@ -85,8 +47,8 @@ class Auth
     {
         $user = self::auth($field, $secret);
 
-        $expiry = self::getConfigField(self::CONFIG_COOKIE_EXPIRY_DAYS);
-        $model = self::getConfigField(self::CONFIG_MODEL);
+        $expiry = self::getConfigField(AuthConfig::COOKIE_EXPIRY);
+        $model = self::getConfigField(AuthConfig::MODEL);
 
         $primary_key_name = $model::getPrimaryKey();
         $primary_key = $user->{$primary_key_name};
@@ -105,6 +67,7 @@ class Auth
         }
 
         self::$auth_user = $user;
+        self::dispatchAuthEvent($user);
         return true;
     }
 
@@ -117,7 +80,6 @@ class Auth
     public static function attemptJwt(string $token): AuthJwtResult
     {
         [$key_str, $alg] = self::getJwtConfig();
-        $config = self::getConfig();
 
         $key = new Key(
             $key_str,
@@ -129,11 +91,20 @@ class Auth
             $key
         );
 
-        $model = $config[self::CONFIG_MODEL];
+        $model = self::getConfigField(AuthConfig::MODEL);
         $user = $model::find($payload->id);
 
+        if (!$user) {
+            throw new AuthException(
+                self::getConfigField(AuthConfig::ERROR_MESSAGE)
+            );
+        }
+
         $content = (array) $payload;
-        unset($content['id']);
+
+        if (isset($content['id'])) {
+            unset($content['id']);
+        }
 
         return new AuthJwtResult(
             $user,
@@ -144,17 +115,17 @@ class Auth
     /**
      * Attempt authorization and return jwt token
      *
-     * @param string $field
-     * @param string $secret
-     * @param array $params
+     * @param string $field Model field name
+     * @param string $secret Password
+     * @param array $options Other options to add to jwt
      * @return string
      */
-    public static function attempt2json(string $field, string $secret, array $params = []): string
+    public static function attempt2json(string $field, string $secret, array $options = []): string
     {
         [$key, $alg] = self::getJwtConfig();
         $config = self::getConfig();
 
-        $primary_key_name = $config[self::CONFIG_MODEL]::getPrimaryKey();
+        $primary_key_name = $config[AuthConfig::MODEL]::getPrimaryKey();
         $user = self::auth($field, $secret);
         $primary_key = array(
             'id' => $user->{$primary_key_name}
@@ -162,7 +133,7 @@ class Auth
 
         $payload = array_merge(
             $primary_key,
-            $params
+            $options
         );
 
         return JWT::encode(
@@ -207,7 +178,7 @@ class Auth
             return self::getAuthUserFromCookie();
         }
 
-        $model = self::getConfigField(self::CONFIG_MODEL);
+        $model = self::getConfigField(AuthConfig::MODEL);
         $user = $model::find($auth_id);
 
         if (!$user) {
@@ -243,7 +214,7 @@ class Auth
             return null;
         }
 
-        $model = self::getConfigField(self::CONFIG_MODEL);
+        $model = self::getConfigField(AuthConfig::MODEL);
         $user = $model::find($auth_id);
 
         if (!$user) {
@@ -266,10 +237,10 @@ class Auth
      */
     protected static function auth(string $field, string $secret)
     {
-        $combinations = self::getConfigField(self::CONFIG_COMBINATION);
-        $hash_method = self::getConfigField(self::CONFIG_HASH_METHOD);
-        $error_msg = self::getConfigField(self::CONFIG_ERROR_MSG);
-        $model = self::getConfigField(self::CONFIG_MODEL);
+        $combinations = self::getConfigField(AuthConfig::COMBINATION);
+        $hash_method = self::getConfigField(AuthConfig::HASH_METHOD);
+        $error_msg = self::getConfigField(AuthConfig::ERROR_MESSAGE);
+        $model = self::getConfigField(AuthConfig::MODEL);
 
         if (!$error_msg) {
             throw new AuthSetupException('Authentication failed error message not set');
@@ -332,6 +303,7 @@ class Auth
             throw new AuthException($error_msg);
         }
 
+        self::dispatchAuthEvent($query);
         return $query;
     }
 
@@ -362,9 +334,17 @@ class Auth
      * @param string $name
      * @return mixed
      */
-    protected static function getConfigField(string $name): mixed
+    protected static function getConfigField(string $config): mixed
     {
-        return self::getConfig()[$name] ?? null;
+        $value = self::getConfig()[$config] ?? null;
+
+        if (!$value) {
+            throw new AuthSetupException(
+                sprintf('Auth config "%s" not found', $config)
+            );
+        }
+
+        return $value;
     }
 
     /**
@@ -375,7 +355,7 @@ class Auth
     protected static function getJwtConfig(): array
     {
         $config = self::getConfig();
-        $jwt_config = $config[self::CONFIG_JWT] ?? null;
+        $jwt_config = $config[AuthConfig::JWT] ?? null;
 
         if (!$jwt_config) {
             throw new AuthSetupException('Auth JWT not configured');
@@ -385,5 +365,19 @@ class Auth
         $alg = $jwt_config['alg'];
 
         return [$key, $alg];
+    }
+
+    /**
+     * Dispatch authenitcated event
+     *
+     * @param ModelInterface $user
+     * @return void
+     */
+    protected static function dispatchAuthEvent(ModelInterface $user)
+    {
+        EventManager::dispatchEvent(
+            handler: AuthEvents::AUTHENTICATED,
+            arg: $user
+        );
     }
 }

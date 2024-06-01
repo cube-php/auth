@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "da1ad75ebf4179289e4749e7ef8fe530",
+    "content-hash": "a8ea73fd282943a1bbbb31c0f19ff0e9",
     "packages": [
         {
             "name": "cube-php/core",
-            "version": "0.1.11",
+            "version": "0.1.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cube-php/core.git",
-                "reference": "3c553835e8d6686869f7087a4e6e097df446078d"
+                "reference": "7e943783f17724555d03c9622d03fad0d221da81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cube-php/core/zipball/3c553835e8d6686869f7087a4e6e097df446078d",
-                "reference": "3c553835e8d6686869f7087a4e6e097df446078d",
+                "url": "https://api.github.com/repos/cube-php/core/zipball/7e943783f17724555d03c9622d03fad0d221da81",
+                "reference": "7e943783f17724555d03c9622d03fad0d221da81",
                 "shasum": ""
             },
             "require": {
@@ -48,9 +48,9 @@
             "description": "PHP Cube core utilities",
             "support": {
                 "issues": "https://github.com/cube-php/core/issues",
-                "source": "https://github.com/cube-php/core/tree/v0.1.11"
+                "source": "https://github.com/cube-php/core/tree/v0.1.17"
             },
-            "time": "2023-10-19T22:15:50+00:00"
+            "time": "2024-04-30T16:42:59+00:00"
         },
         {
             "name": "firebase/php-jwt",
