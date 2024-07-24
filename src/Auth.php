@@ -43,7 +43,7 @@ class Auth
      * @param boolean $remember
      * @return boolean
      */
-    public static function attempt(string $field, string $secret, bool $remember = false): bool
+    public static function attempt(string $field, string $secret, bool $remember = false, bool $set_session = true): bool
     {
         $user = self::auth($field, $secret);
 
@@ -53,10 +53,12 @@ class Auth
         $primary_key_name = $model::getPrimaryKey();
         $primary_key = $user->{$primary_key_name};
 
-        Session::set(
-            self::$auth_name,
-            $primary_key
-        );
+        if ($set_session) {
+            Session::set(
+                self::$auth_name,
+                $primary_key
+            );
+        }
 
         if ($remember) {
             Cookie::set(
@@ -127,6 +129,7 @@ class Auth
 
         $primary_key_name = $config[AuthConfig::MODEL]::getPrimaryKey();
         $user = self::auth($field, $secret);
+
         $primary_key = array(
             'id' => $user->{$primary_key_name}
         );
@@ -200,34 +203,6 @@ class Auth
         Cookie::remove(self::$auth_name);
         return true;
     }
-
-    /**
-     * Get authenticated user from session
-     *
-     * @return ModelInterface|null
-     */
-    protected static function getAuthUserFromCookie(): ?ModelInterface
-    {
-        $auth_id = Cookie::get(self::$auth_name);
-
-        if (!$auth_id) {
-            return null;
-        }
-
-        $model = self::getConfigField(AuthConfig::MODEL);
-        $user = $model::find($auth_id);
-
-        if (!$user) {
-            return null;
-        }
-
-        $primary_key_name = $model::getPrimaryKey();
-        $primary_key = $user->{$primary_key_name};
-
-        Session::set(self::$auth_name, $$primary_key);
-        return $user;
-    }
-
     /**
      * Perform authentication
      *
@@ -235,7 +210,7 @@ class Auth
      * @param string $secret
      * @return mixed
      */
-    protected static function auth(string $field, string $secret)
+    public static function auth(string $field, string $secret)
     {
         $combinations = self::getConfigField(AuthConfig::COMBINATION);
         $hash_method = self::getConfigField(AuthConfig::HASH_METHOD);
@@ -305,6 +280,33 @@ class Auth
 
         self::dispatchAuthEvent($query);
         return $query;
+    }
+
+    /**
+     * Get authenticated user from session
+     *
+     * @return ModelInterface|null
+     */
+    protected static function getAuthUserFromCookie(): ?ModelInterface
+    {
+        $auth_id = Cookie::get(self::$auth_name);
+
+        if (!$auth_id) {
+            return null;
+        }
+
+        $model = self::getConfigField(AuthConfig::MODEL);
+        $user = $model::find($auth_id);
+
+        if (!$user) {
+            return null;
+        }
+
+        $primary_key_name = $model::getPrimaryKey();
+        $primary_key = $user->{$primary_key_name};
+
+        Session::set(self::$auth_name, $$primary_key);
+        return $user;
     }
 
     /**
