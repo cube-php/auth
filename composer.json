@@ -2,7 +2,7 @@
   "name": "cube-php/auth",
   "description": "PHP Cube Authentication Package",
   "type": "package",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "autoload": {
     "psr-4": {
