@@ -43,7 +43,7 @@ class Auth
      * @param boolean $remember
      * @return boolean
      */
-    public static function attempt(string $field, string $secret, bool $remember = false, bool $set_session = true): bool
+    public static function attempt(string $field, string $secret, bool $remember = false): bool
     {
         $user = self::auth($field, $secret);
 
@@ -53,12 +53,10 @@ class Auth
         $primary_key_name = $model::getPrimaryKey();
         $primary_key = $user->{$primary_key_name};
 
-        if ($set_session) {
-            Session::set(
-                self::$auth_name,
-                $primary_key
-            );
-        }
+        Session::set(
+            self::$auth_name,
+            $primary_key
+        );
 
         if ($remember) {
             Cookie::set(
