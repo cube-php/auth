@@ -12,6 +12,7 @@ use Cube\Packages\Auth\Exceptions\AuthSetupException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use InvalidArgumentException;
+use Throwable;
 
 class Auth
 {
@@ -87,10 +88,14 @@ class Auth
             $alg
         );
 
-        $payload = JWT::decode(
-            $token,
-            $key
-        );
+        try {
+            $payload = JWT::decode(
+                $token,
+                $key
+            );
+        } catch (Throwable $e) {
+            throw new AuthJwtException($e->getMessage());
+        }
 
         $model = self::getConfigField(AuthConfig::MODEL);
         $user = $model::find($payload->id);
@@ -307,7 +312,7 @@ class Auth
         $primary_key_name = $model::getPrimaryKey();
 
         $primary_key = array(
-            'id' > $user->{$primary_key_name}
+            'id' => $user->{$primary_key_name}
         );
 
         $payload = array_merge(
