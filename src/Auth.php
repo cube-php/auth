@@ -8,6 +8,7 @@ use Cube\Http\Session;
 use Cube\Interfaces\ModelInterface;
 use Cube\Misc\EventManager;
 use Cube\Packages\Auth\Exceptions\AuthException;
+use Cube\Packages\Auth\Exceptions\AuthJwtException;
 use Cube\Packages\Auth\Exceptions\AuthSetupException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;

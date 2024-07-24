@@ -1,6 +1,6 @@
 <?php
 
-namespace Cube\Packages\Auth;
+namespace Cube\Packages\Auth\Exceptions;
 
 use Exception;
 
