@@ -11,6 +11,7 @@ use Cube\Packages\Auth\Exceptions\AuthException;
 use Cube\Packages\Auth\Exceptions\AuthSetupException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use InvalidArgumentException;
 
 class Auth
 {
@@ -118,9 +119,9 @@ class Auth
      * @param string $field Model field name
      * @param string $secret Password
      * @param array $options Other options to add to jwt
-     * @return string
+     * @return AuthJwtAttemptResult
      */
-    public static function attempt2json(string $field, string $secret, array $options = []): string
+    public static function attempt2json(string $field, string $secret, array $options = []): AuthJwtAttemptResult
     {
         [$key, $alg] = self::getJwtConfig();
         $config = self::getConfig();
@@ -137,10 +138,15 @@ class Auth
             $options
         );
 
-        return JWT::encode(
+        $token = JWT::encode(
             $payload,
             $key,
             $alg
+        );
+
+        return new AuthJwtAttemptResult(
+            token: $token,
+            user: $user,
         );
     }
 
@@ -278,6 +284,46 @@ class Auth
 
         self::dispatchAuthEvent($query);
         return $query;
+    }
+
+    /**
+     * Generate jwt for $user
+     *
+     * @param ModelInterface $user
+     * @param array $options
+     * @return AuthJwtAttemptResult
+     */
+    public static function jwtFor(ModelInterface $user, array $options = array()): AuthJwtAttemptResult
+    {
+        $model = self::getConfigField(AuthConfig::MODEL);
+
+        if ($user::class !== $model) {
+            throw new InvalidArgumentException(
+                sprintf('$user is not an instance of "%s"', $model)
+            );
+        }
+
+        [$key, $alg] = self::getJwtConfig();
+
+        $primary_key = array(
+            'id' > $user->id
+        );
+
+        $payload = array_merge(
+            $primary_key,
+            $options
+        );
+
+        $token = JWT::encode(
+            $payload,
+            $key,
+            $alg
+        );
+
+        return new AuthJwtAttemptResult(
+            token: $token,
+            user: $user,
+        );
     }
 
     /**
