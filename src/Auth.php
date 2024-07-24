@@ -304,9 +304,10 @@ class Auth
         }
 
         [$key, $alg] = self::getJwtConfig();
+        $primary_key_name = $model::getPrimaryKey();
 
         $primary_key = array(
-            'id' > $user->id
+            'id' > $user->{$primary_key_name}
         );
 
         $payload = array_merge(
