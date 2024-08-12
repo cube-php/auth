@@ -63,7 +63,7 @@ class Auth
 
         if ($remember) {
             Cookie::set(
-                expires: getdays($expiry),
+                expires: time() + getdays($expiry),
                 name: self::$auth_name,
                 value: $primary_key,
             );
@@ -181,10 +181,6 @@ class Auth
      */
     public static function user(): ?ModelInterface
     {
-        if (self::$auth_user) {
-            return self::$auth_user;
-        }
-
         $auth_id = Session::get(self::$auth_name);
 
         if (!$auth_id) {
@@ -198,7 +194,6 @@ class Auth
             return null;
         }
 
-        self::$auth_user = $user;
         return $user;
     }
 
@@ -356,7 +351,7 @@ class Auth
         $primary_key_name = $model::getPrimaryKey();
         $primary_key = $user->{$primary_key_name};
 
-        Session::set(self::$auth_name, $$primary_key);
+        Session::set(self::$auth_name, $primary_key);
         return $user;
     }
 
