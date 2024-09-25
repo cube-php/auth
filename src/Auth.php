@@ -4,6 +4,7 @@ namespace Cube\Packages\Auth;
 
 use Cube\App\App;
 use Cube\Http\Cookie;
+use Cube\Http\Request;
 use Cube\Http\Session;
 use Cube\Interfaces\ModelInterface;
 use Cube\Misc\EventManager;
@@ -172,6 +173,39 @@ class Auth
         }
 
         return true;
+    }
+
+    /**
+     * Retrieve token from request header
+     *
+     * @param Request $request
+     * @param AuthTokenType $type
+     * @return string
+     */
+    public static function getTokenFromRequest(Request $request, AuthTokenType $type): string
+    {
+        $header = $request->getServer()->get('http_authorization');
+
+        if (!$header) {
+            throw new AuthException('Authorization header not found');
+        }
+
+        $specified_type = strtolower($type->value);
+        $sent_type = substr($header, 0, strlen($specified_type));
+
+        if (!$sent_type) {
+            throw new AuthException('No authorization');
+        }
+
+        if ($specified_type !== strtolower($sent_type)) {
+            throw new AuthException('Invalid authorization type');
+        }
+
+        $token = trim(
+            substr($header, strlen($specified_type))
+        );
+
+        return $token;
     }
 
     /**
