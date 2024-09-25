@@ -4,23 +4,24 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a8ea73fd282943a1bbbb31c0f19ff0e9",
+    "content-hash": "dbea4369fc1bf6ee0a72fb4bc444b62b",
     "packages": [
         {
             "name": "cube-php/core",
-            "version": "0.1.17",
+            "version": "0.1.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cube-php/core.git",
-                "reference": "7e943783f17724555d03c9622d03fad0d221da81"
+                "reference": "38b12a94909d93d03aeca1fe741603a4f88f3c73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cube-php/core/zipball/7e943783f17724555d03c9622d03fad0d221da81",
-                "reference": "7e943783f17724555d03c9622d03fad0d221da81",
+                "url": "https://api.github.com/repos/cube-php/core/zipball/38b12a94909d93d03aeca1fe741603a4f88f3c73",
+                "reference": "38b12a94909d93d03aeca1fe741603a4f88f3c73",
                 "shasum": ""
             },
             "require": {
+                "dammynex/pagenator": "^0.1.4",
                 "symfony/cache": "^5.2",
                 "symfony/console": "^5.2",
                 "symfony/process": "^5.2",
@@ -48,9 +49,49 @@
             "description": "PHP Cube core utilities",
             "support": {
                 "issues": "https://github.com/cube-php/core/issues",
-                "source": "https://github.com/cube-php/core/tree/v0.1.17"
+                "source": "https://github.com/cube-php/core/tree/v0.1.23"
             },
-            "time": "2024-04-30T16:42:59+00:00"
+            "time": "2024-08-15T16:47:14+00:00"
+        },
+        {
+            "name": "dammynex/pagenator",
+            "version": "0.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dammynex/pagenator.git",
+                "reference": "0757d1c59acb2fc6e476878cd09a3468ab22c573"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dammynex/pagenator/zipball/0757d1c59acb2fc6e476878cd09a3468ab22c573",
+                "reference": "0757d1c59acb2fc6e476878cd09a3468ab22c573",
+                "shasum": ""
+            },
+            "require-dev": {
+                "pestphp/pest": "^0.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Dammynex\\Pagenator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Salawu Oluwadamilola Ezekiel",
+                    "email": "damilolaoffical@gmail.com"
+                }
+            ],
+            "description": "Simple PHP Pager library",
+            "support": {
+                "issues": "https://github.com/dammynex/pagenator/issues",
+                "source": "https://github.com/dammynex/pagenator/tree/v0.1.4"
+            },
+            "time": "2021-09-12T20:45:48+00:00"
         },
         {
             "name": "firebase/php-jwt",
