@@ -2,7 +2,7 @@
   "name": "cube-php/auth",
   "description": "PHP Cube Authentication Package",
   "type": "package",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "license": "MIT",
   "autoload": {
     "psr-4": {
@@ -16,7 +16,7 @@
     }
   ],
   "require": {
-    "cube-php/core": "^0.1.23",
+    "cube-php/core": "0.1.31",
     "firebase/php-jwt": "^6.10"
   },
   "extra": {

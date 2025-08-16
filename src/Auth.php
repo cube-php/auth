@@ -211,14 +211,15 @@ class Auth
     /**
      * User
      *
+     * @param Request $request
      * @return ModelInterface|null
      */
-    public static function user(): ?ModelInterface
+    public static function user(Request $request): ?ModelInterface
     {
         $auth_id = Session::get(self::$auth_name);
 
         if (!$auth_id) {
-            return self::getAuthUserFromCookie();
+            return self::getAuthUserFromCookie($request);
         }
 
         $model = self::getConfigField(AuthConfig::MODEL);
@@ -365,11 +366,12 @@ class Auth
     /**
      * Get authenticated user from session
      *
+     * @param Request $request
      * @return ModelInterface|null
      */
-    protected static function getAuthUserFromCookie(): ?ModelInterface
+    protected static function getAuthUserFromCookie(Request $request): ?ModelInterface
     {
-        $auth_id = Cookie::get(self::$auth_name);
+        $auth_id = Cookie::get($request, self::$auth_name);
 
         if (!$auth_id) {
             return null;

@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dbea4369fc1bf6ee0a72fb4bc444b62b",
+    "content-hash": "3d5fd1b97ec382c68cd8bc796905c4ab",
     "packages": [
         {
             "name": "cube-php/core",
-            "version": "0.1.23",
+            "version": "0.1.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cube-php/core.git",
-                "reference": "38b12a94909d93d03aeca1fe741603a4f88f3c73"
+                "reference": "4837a4634bb28dd227d17bd2405681199920d976"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cube-php/core/zipball/38b12a94909d93d03aeca1fe741603a4f88f3c73",
-                "reference": "38b12a94909d93d03aeca1fe741603a4f88f3c73",
+                "url": "https://api.github.com/repos/cube-php/core/zipball/4837a4634bb28dd227d17bd2405681199920d976",
+                "reference": "4837a4634bb28dd227d17bd2405681199920d976",
                 "shasum": ""
             },
             "require": {
@@ -49,9 +49,9 @@
             "description": "PHP Cube core utilities",
             "support": {
                 "issues": "https://github.com/cube-php/core/issues",
-                "source": "https://github.com/cube-php/core/tree/v0.1.23"
+                "source": "https://github.com/cube-php/core/tree/v0.1.31"
             },
-            "time": "2024-08-15T16:47:14+00:00"
+            "time": "2025-08-16T16:49:52+00:00"
         },
         {
             "name": "dammynex/pagenator",
@@ -1523,10 +1523,10 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
+    "platform": {},
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
