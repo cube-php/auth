@@ -212,9 +212,9 @@ class Auth
      * User
      *
      * @param Request $request
-     * @return ModelInterface|null
+     * @return mixed
      */
-    public static function user(Request $request): ?ModelInterface
+    public static function user(Request $request): mixed
     {
         $auth_id = Session::get(self::$auth_name);
 
