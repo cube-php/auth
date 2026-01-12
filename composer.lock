@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ffd9e72709639ec7ee473d05c309757a",
+    "content-hash": "f311b34d1c6c8617188bcf04fd298b15",
     "packages": [
         {
             "name": "cube-php/core",
-            "version": "0.1.32",
+            "version": "0.1.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cube-php/core.git",
-                "reference": "4b7cbf4b01dec3291288716cb830b5cc820287f9"
+                "reference": "7cc0b66fb50a74dec1edee18064f21f762795642"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cube-php/core/zipball/4b7cbf4b01dec3291288716cb830b5cc820287f9",
-                "reference": "4b7cbf4b01dec3291288716cb830b5cc820287f9",
+                "url": "https://api.github.com/repos/cube-php/core/zipball/7cc0b66fb50a74dec1edee18064f21f762795642",
+                "reference": "7cc0b66fb50a74dec1edee18064f21f762795642",
                 "shasum": ""
             },
             "require": {
@@ -49,9 +49,9 @@
             "description": "PHP Cube core utilities",
             "support": {
                 "issues": "https://github.com/cube-php/core/issues",
-                "source": "https://github.com/cube-php/core/tree/v0.1.32"
+                "source": "https://github.com/cube-php/core/tree/v0.1.34"
             },
-            "time": "2025-10-15T15:32:36+00:00"
+            "time": "2026-01-12T07:03:51+00:00"
         },
         {
             "name": "dammynex/pagenator",
@@ -1528,5 +1528,5 @@
     "prefer-lowest": false,
     "platform": {},
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
