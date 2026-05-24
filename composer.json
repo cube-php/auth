@@ -17,7 +17,7 @@
   ],
   "require": {
     "firebase/php-jwt": "^7.0",
-    "cube-php/core": "^0.2.0"
+    "cube-php/core": "^0.2.1"
   },
   "extra": {
     "commands": [

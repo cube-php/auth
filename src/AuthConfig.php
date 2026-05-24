@@ -30,4 +30,9 @@ readonly class AuthConfig
      * @var string No. of days cookie will expire
      */
     public const COOKIE_EXPIRY = 'cookie_expiry_days';
+
+    /**
+     * @var string Cookie hash key
+     */
+    public const COOKIE_HASH_KEY = 'cookie_hash_key';
 }
