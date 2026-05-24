@@ -23,5 +23,7 @@ return array(
     AuthConfig::JWT => array(
         'alg' => env('jwt_alg'),
         'key' => env('jwt_key')
-    )
+    ),
+
+    AuthConfig::COOKIE_HASH_KEY => env('auth_cookie_hash_key'),
 );

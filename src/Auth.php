@@ -60,11 +60,16 @@ class Auth
         Session::set(self::$auth_name, $primary_key);
 
         if ($remember) {
-            Cookie::set(
-                expires: time() + getdays($expiry),
-                name: self::$auth_name,
-                value: $primary_key,
-            );
+
+            $cookie_value = self::generateAuthCookieValue($primary_key);
+
+            if ($cookie_value) {
+                Cookie::set(
+                    expires: time() + getdays($expiry),
+                    name: self::$auth_name,
+                    value: $cookie_value,
+                );
+            }
         }
 
         self::$auth_user = $user;
@@ -367,16 +372,35 @@ class Auth
     protected static function getAuthUserFromCookie(): ?ModelInterface
     {
         $request = app(Request::class);
-        $auth_id = Cookie::get($request, self::$auth_name);
+        $key = self::getConfig()[AuthConfig::COOKIE_HASH_KEY] ?? null;
 
-        if (!$auth_id) {
+        if (!$key) {
+            return null;
+        }
+
+        $auth_cookie = Cookie::get(self::$auth_name);
+        $auth_vars = explode(':', $auth_cookie ?? '');
+
+        $auth_id = $auth_vars[0] ?? null;
+        $auth_hash_value = $auth_vars[1] ?? null;
+
+        if (!$auth_cookie || !$auth_id || !$auth_hash_value) {
+            return null;
+        }
+
+        $value = (int) base64_decode($auth_id);
+        $hashed_value = hash_hmac('sha256', $value, $key);
+
+        if ($hashed_value !== $auth_hash_value) {
+            Cookie::remove(self::$auth_name);
             return null;
         }
 
         $model = self::getConfigField(AuthConfig::MODEL);
-        $user = $model::find($auth_id);
+        $user = $model::find($value);
 
         if (!$user) {
+            Cookie::remove(self::$auth_name);
             return null;
         }
 
@@ -411,7 +435,7 @@ class Auth
     /**
      * Get config field value
      *
-     * @param string $name
+     * @param string $config
      * @return mixed
      */
     protected static function getConfigField(string $config): mixed
@@ -459,5 +483,24 @@ class Auth
             handler: AuthEvents::AUTHENTICATED,
             arg: $user
         );
+    }
+
+    /**
+     * Generate auth cookie value
+     *
+     * @param mixed $primary_key
+     * @return string|null
+     */
+    protected static function generateAuthCookieValue(mixed $primary_key): string|null
+    {
+        $key = self::getConfig()[AuthConfig::COOKIE_HASH_KEY] ?? null;
+
+        if (!$key) {
+            return null;
+        }
+
+        $encoded_id = base64_encode($primary_key);
+        $hash_value = hash_hmac('sha256', $primary_key, $key);
+        return concat($encoded_id, ':', $hash_value);
     }
 }
